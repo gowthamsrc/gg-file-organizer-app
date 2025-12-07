@@ -18,10 +18,10 @@ namespace gg_file_organizer.Controls
     /// <summary>
     /// Interaction logic for Text_Box.xaml
     /// </summary>
-    public partial class Text_Box : TextBox
+    public partial class Text_Box : System.Windows.Controls.TextBox
     {
         Popup Popup { get { return this.Template.FindName("PART_Popup", this) as Popup; } }
-        ListBox ItemList { get { return this.Template.FindName("PART_ItemList", this) as ListBox; } }
+        System.Windows.Controls.ListBox ItemList { get { return this.Template.FindName("PART_ItemList", this) as System.Windows.Controls.ListBox; } }
         Grid Root { get { return this.Template.FindName("root", this) as Grid; } }
         //12-25-08 : Add Ghost image when picking from ItemList
         //TextBlock TempVisual { get { return this.Template.FindName("PART_TempVisual", this) as TextBlock; } }
@@ -40,10 +40,10 @@ namespace gg_file_organizer.Controls
         {
             base.OnApplyTemplate();
             _loaded = true;
-            this.KeyDown += new KeyEventHandler(AutoCompleteTextBox_KeyDown);
-            this.PreviewKeyDown += new KeyEventHandler(AutoCompleteTextBox_PreviewKeyDown);
+            this.KeyDown += new System.Windows.Input.KeyEventHandler(AutoCompleteTextBox_KeyDown);
+            this.PreviewKeyDown += new System.Windows.Input.KeyEventHandler(AutoCompleteTextBox_PreviewKeyDown);
             ItemList.PreviewMouseDown += new MouseButtonEventHandler(ItemList_PreviewMouseDown);
-            ItemList.KeyDown += new KeyEventHandler(ItemList_KeyDown);
+            ItemList.KeyDown += new System.Windows.Input.KeyEventHandler(ItemList_KeyDown);
             //TempVisual.MouseDown += new MouseButtonEventHandler(TempVisual_MouseDown);
             //09-04-09 Based on SilverLaw's approach 
             Popup.CustomPopupPlacementCallback += new CustomPopupPlacementCallback(Repositioning);
@@ -68,10 +68,10 @@ namespace gg_file_organizer.Controls
         }
 
         //09-04-09 Based on SilverLaw's approach 
-        private CustomPopupPlacement[] Repositioning(Size popupSize, Size targetSize, Point offset)
+        private CustomPopupPlacement[] Repositioning(System.Windows.Size popupSize, System.Windows.Size targetSize, System.Windows.Point offset)
         {
             return new CustomPopupPlacement[] {
-                new CustomPopupPlacement(new Point((0.01 - offset.X), (Root.ActualHeight - offset.Y)), PopupPrimaryAxis.None) };
+                new CustomPopupPlacement(new System.Windows.Point((0.01 - offset.X), (Root.ActualHeight - offset.Y)), PopupPrimaryAxis.None) };
         }
 
         void TempVisual_MouseDown(object sender, MouseButtonEventArgs e)
@@ -82,7 +82,7 @@ namespace gg_file_organizer.Controls
             Popup.IsOpen = false;
         }
 
-        void AutoCompleteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        void AutoCompleteTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //12-25-08 - added PageDown Support
             if (ItemList.Items.Count > 0 && !(e.OriginalSource is ListBoxItem))
@@ -103,7 +103,7 @@ namespace gg_file_organizer.Controls
         }
 
 
-        void ItemList_KeyDown(object sender, KeyEventArgs e)
+        void ItemList_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.OriginalSource is ListBoxItem)
             {
@@ -136,7 +136,7 @@ namespace gg_file_organizer.Controls
         }
 
 
-        void AutoCompleteTextBox_KeyDown(object sender, KeyEventArgs e)
+        void AutoCompleteTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -147,8 +147,8 @@ namespace gg_file_organizer.Controls
 
         void updateSource()
         {
-            if (this.GetBindingExpression(TextBox.TextProperty) != null)
-                this.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            if (this.GetBindingExpression(System.Windows.Controls.TextBox.TextProperty) != null)
+                this.GetBindingExpression(System.Windows.Controls.TextBox.TextProperty).UpdateSource();
         }
 
         void ItemList_PreviewMouseDown(object sender, MouseButtonEventArgs e)

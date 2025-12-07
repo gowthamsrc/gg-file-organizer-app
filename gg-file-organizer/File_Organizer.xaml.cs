@@ -50,7 +50,7 @@ namespace gg_file_organizer
             DataContext = new Model();
             Output_Window.AppendText("\t\t\t\t\tWelcome to GG file organizer application\n");
             Output_Window.FontSize = 12.00;
-            Output_Window.Foreground = Brushes.LawnGreen;
+            Output_Window.Foreground = System.Windows.Media.Brushes.LawnGreen;
             Common_Progress_Bar.Value = 0;
             Percentage_lbl.Content = "0%";
             this.BGworker_FileApp.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BGworker_FileApp_DoWork);
@@ -59,25 +59,25 @@ namespace gg_file_organizer
             BGworker_FileApp.WorkerReportsProgress = true;
         }
 
-        private void FolderF1_MouseEnter(object sender, MouseEventArgs e)
+        private void FolderF1_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             string packUri = @"pack://application:,,,/Resources/Folder_onhover.png";
             F1.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
         }
 
-        private void FolderF1_MouseLeave(object sender, MouseEventArgs e)
+        private void FolderF1_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             string packUri = @"pack://application:,,,/Resources/Folder.png";
             F1.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
         }
 
-        private void FolderF2_MouseEnter(object sender, MouseEventArgs e)
+        private void FolderF2_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             string packUri = @"pack://application:,,,/Resources/Folder_onhover.png";
             F2.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
         }
 
-        private void FolderF2_MouseLeave(object sender, MouseEventArgs e)
+        private void FolderF2_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             string packUri = @"pack://application:,,,/Resources/Folder.png";
             F2.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
@@ -486,12 +486,12 @@ namespace gg_file_organizer
             IsDeleteSelected = false;
             if(rb_photo.IsChecked == false && rb_video.IsChecked == false && rb_all.IsChecked == false)
             {
-                MessageBox.Show("Please chosse any one file type and retry!!!!");
+                System.Windows.MessageBox.Show("Please chosse any one file type and retry!!!!");
                 return;
             }
             if(string.IsNullOrEmpty(Source_txt.Text) || string.IsNullOrEmpty(Destination_txt.Text))
             {
-                MessageBox.Show("Please choose the path before proceding!!!");
+                System.Windows.MessageBox.Show("Please choose the path before proceding!!!");
                 return;
             }
 
@@ -539,12 +539,12 @@ namespace gg_file_organizer
             IsDeleteSelected = false;
             if (rb_photo.IsChecked == false && rb_video.IsChecked == false && rb_all.IsChecked == false)
             {
-                MessageBox.Show("Please chosse any one file type and retry!!!!");
+                System.Windows.MessageBox.Show("Please chosse any one file type and retry!!!!");
                 return;
             }
             if (string.IsNullOrEmpty(Source_txt.Text) || string.IsNullOrEmpty(Destination_txt.Text))
             {
-                MessageBox.Show("Please choose the path before proceding!!!");
+                System.Windows.MessageBox.Show("Please choose the path before proceding!!!");
                 return;
             }
             //Alert message to the customer
@@ -626,12 +626,12 @@ namespace gg_file_organizer
             IsDeleteSelected = true;
             if (rb_photo.IsChecked == false && rb_video.IsChecked == false && rb_all.IsChecked == false)
             {
-                MessageBox.Show("Please chosse any one file type and retry!!!!");
+                System.Windows.MessageBox.Show("Please chosse any one file type and retry!!!!");
                 return;
             }
             if (string.IsNullOrEmpty(Source_txt.Text) || string.IsNullOrEmpty(Destination_txt.Text))
             {
-                MessageBox.Show("Please choose the path before proceding!!!");
+                System.Windows.MessageBox.Show("Please choose the path before proceding!!!");
                 return;
             }
             //Alert message to the customer
