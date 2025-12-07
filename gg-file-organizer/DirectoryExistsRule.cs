@@ -16,13 +16,17 @@ namespace gg_file_organizer.Tools
         {
             try
             {
-                if (!(value is string))
+                if (value is not string stringValue)
                     return new ValidationResult(false, "InvalidPath");
 
-                if (!Directory.Exists((string)value))
+                if (!Directory.Exists(stringValue))
                     return new ValidationResult(false, "Path Not Found");
             }
-            catch (Exception ex)
+            catch (ArgumentException)
+            {
+                return new ValidationResult(false, "Invalid Path");
+            }
+            catch (IOException)
             {
                 return new ValidationResult(false, "Invalid Path");
             }

@@ -1,87 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>gg_file_organizer</RootNamespace>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Gowtham.DESKTOP-PM85QAN\Desktop\7\Test\gg-photo-organizer-app\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Resources\GG_icon.ico</ApplicationIcon>
-    <ManifestCertificateThumbprint>E39485795D01E579FDCFD31A87991A56DB03D19C</ManifestCertificateThumbprint>
-    <ManifestKeyFile>gg-photo-organizer_TemporaryKey.pfx</ManifestKeyFile>
-    <GenerateManifests>true</GenerateManifests>
-    <SignManifests>false</SignManifests>
-  </PropertyGroup>
+<PropertyGroup>
+  <TargetFramework>net8.0-windows</TargetFramework>
+  <OutputType>WinExe</OutputType>
+  <RootNamespace>gg_file_organizer</RootNamespace>
+  <UseWPF>true</UseWPF>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <Nullable>enable</Nullable>
+  <ApplicationIcon>Resources\GG_icon.ico</ApplicationIcon>
+</PropertyGroup>
   <ItemGroup>
-    <Resource Include="Resources\Open_Image.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Resources\Open_Image.png" />
     <Resource Include="Resources\Ph_button.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Folder_open.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Folder_initial.png" />
     <Resource Include="Resources\Folder_onhover.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\folder.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\button_clear.png" />
     <Resource Include="Resources\button_copy.png" />
     <Resource Include="Resources\button_verify.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GG_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\save_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\button_delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.0" />
-    <PackageReference Include="CoreWCF.Primitives" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.ConfigurationManager" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.Http" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.WebHttp" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.NetTcp" Version="1.8.0" />
+    <Resource Include="Resources\icon.ico" />
+    <Resource Include="Resources\GG_icon.ico" />
+    <Resource Include="Resources\save_icon.png" />
   </ItemGroup>
 </Project>

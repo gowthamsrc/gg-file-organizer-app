@@ -20,21 +20,32 @@ namespace gg_file_organizer.Controls
     /// </summary>
     public partial class Text_Box : System.Windows.Controls.TextBox
     {
-        Popup Popup { get { return this.Template.FindName("PART_Popup", this) as Popup; } }
-        System.Windows.Controls.ListBox ItemList { get { return this.Template.FindName("PART_ItemList", this) as System.Windows.Controls.ListBox; } }
-        Grid Root { get { return this.Template.FindName("root", this) as Grid; } }
+        private Popup? Popup => this.Template.FindName("PART_Popup", this) as Popup;
+        private System.Windows.Controls.ListBox? ItemList => this.Template.FindName("PART_ItemList", this) as System.Windows.Controls.ListBox;
+        private Grid? Root => this.Template.FindName("root", this) as Grid;
         //12-25-08 : Add Ghost image when picking from ItemList
         //TextBlock TempVisual { get { return this.Template.FindName("PART_TempVisual", this) as TextBlock; } }
-        ScrollViewer Host { get { return this.Template.FindName("PART_ContentHost", this) as ScrollViewer; } }
-        UIElement TextBoxView { get { foreach (object o in LogicalTreeHelper.GetChildren(Host)) return o as UIElement; return null; } }
+        private ScrollViewer? Host => this.Template.FindName("PART_ContentHost", this) as ScrollViewer;
+        private UIElement? TextBoxView
+        {
+            get
+            {
+                if (Host == null) return null;
+                foreach (object o in LogicalTreeHelper.GetChildren(Host))
+                    return o as UIElement;
+                return null;
+            }
+        }
 
         private bool _loaded = false;
-        string lastPath;
+        private string? _lastPath;
+        
         public Text_Box()
         {
             InitializeComponent();
         }
-        private bool prevState = false;
+        
+        private bool _prevState = false;
 
         public override void OnApplyTemplate()
         {
@@ -42,27 +53,33 @@ namespace gg_file_organizer.Controls
             _loaded = true;
             this.KeyDown += new System.Windows.Input.KeyEventHandler(AutoCompleteTextBox_KeyDown);
             this.PreviewKeyDown += new System.Windows.Input.KeyEventHandler(AutoCompleteTextBox_PreviewKeyDown);
-            ItemList.PreviewMouseDown += new MouseButtonEventHandler(ItemList_PreviewMouseDown);
-            ItemList.KeyDown += new System.Windows.Input.KeyEventHandler(ItemList_KeyDown);
+            
+            if (ItemList != null)
+            {
+                ItemList.PreviewMouseDown += new MouseButtonEventHandler(ItemList_PreviewMouseDown);
+                ItemList.KeyDown += new System.Windows.Input.KeyEventHandler(ItemList_KeyDown);
+            }
+            
             //TempVisual.MouseDown += new MouseButtonEventHandler(TempVisual_MouseDown);
             //09-04-09 Based on SilverLaw's approach 
-            Popup.CustomPopupPlacementCallback += new CustomPopupPlacementCallback(Repositioning);
-
-
-            Window parentWindow = getParentWindow();
-            if (parentWindow != null)
+            if (Popup != null)
             {
-                parentWindow.Deactivated += delegate { prevState = Popup.IsOpen; Popup.IsOpen = false; };
-                parentWindow.Activated += delegate { Popup.IsOpen = prevState; };
+                Popup.CustomPopupPlacementCallback += new CustomPopupPlacementCallback(Repositioning);
             }
 
-
+            Window? parentWindow = GetParentWindow();
+            if (parentWindow != null && Popup != null)
+            {
+                var popup = Popup;
+                parentWindow.Deactivated += delegate { _prevState = popup.IsOpen; popup.IsOpen = false; };
+                parentWindow.Activated += delegate { popup.IsOpen = _prevState; };
+            }
         }
 
-        private Window getParentWindow()
+        private Window? GetParentWindow()
         {
-            DependencyObject d = this;
-            while (d != null && !(d is Window))
+            DependencyObject? d = this;
+            while (d != null && d is not Window)
                 d = LogicalTreeHelper.GetParent(d);
             return d as Window;
         }
@@ -70,22 +87,26 @@ namespace gg_file_organizer.Controls
         //09-04-09 Based on SilverLaw's approach 
         private CustomPopupPlacement[] Repositioning(System.Windows.Size popupSize, System.Windows.Size targetSize, System.Windows.Point offset)
         {
+            var rootHeight = Root?.ActualHeight ?? 0;
             return new CustomPopupPlacement[] {
-                new CustomPopupPlacement(new System.Windows.Point((0.01 - offset.X), (Root.ActualHeight - offset.Y)), PopupPrimaryAxis.None) };
+                new CustomPopupPlacement(new System.Windows.Point((0.01 - offset.X), (rootHeight - offset.Y)), PopupPrimaryAxis.None) };
         }
 
-        void TempVisual_MouseDown(object sender, MouseButtonEventArgs e)
+        private void TempVisual_MouseDown(object sender, MouseButtonEventArgs e)
         {
             string text = Text;
-            ItemList.SelectedIndex = -1;
+            if (ItemList != null)
+                ItemList.SelectedIndex = -1;
             Text = text;
-            Popup.IsOpen = false;
+            if (Popup != null)
+                Popup.IsOpen = false;
         }
 
-        void AutoCompleteTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void AutoCompleteTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //12-25-08 - added PageDown Support
-            if (ItemList.Items.Count > 0 && !(e.OriginalSource is ListBoxItem))
+            if (ItemList != null && ItemList.Items.Count > 0 && e.OriginalSource is not ListBoxItem)
+            {
                 switch (e.Key)
                 {
                     case Key.Up:
@@ -94,73 +115,75 @@ namespace gg_file_organizer.Controls
                     case Key.Next:
                         ItemList.Focus();
                         ItemList.SelectedIndex = 0;
-                        ListBoxItem lbi = ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex) as ListBoxItem;
-                        lbi.Focus();
+                        if (ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex) is ListBoxItem lbi)
+                        {
+                            lbi.Focus();
+                        }
                         e.Handled = true;
                         break;
-
                 }
+            }
         }
 
-
-        void ItemList_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ItemList_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.OriginalSource is ListBoxItem)
+            if (e.OriginalSource is ListBoxItem tb)
             {
-
-                ListBoxItem tb = e.OriginalSource as ListBoxItem;
-
                 e.Handled = true;
                 switch (e.Key)
                 {
                     case Key.Enter:
-                        Text = (tb.Content as string); updateSource(); break;
+                        Text = tb.Content as string ?? string.Empty;
+                        UpdateSource();
+                        break;
                     //12-25-08 - added "\" support when picking in list view
                     case Key.Oem5:
-                        Text = (tb.Content as string) + "\\";
+                        Text = (tb.Content as string ?? string.Empty) + "\\";
                         break;
                     //12-25-08 - roll back if escape is pressed
                     case Key.Escape:
-                        Text = lastPath.TrimEnd('\\') + "\\";
+                        Text = (_lastPath?.TrimEnd('\\') ?? string.Empty) + "\\";
                         break;
-                    default: e.Handled = false; break;
+                    default:
+                        e.Handled = false;
+                        break;
                 }
                 //12-25-08 - Force focus back the control after selected.
                 if (e.Handled)
                 {
                     Keyboard.Focus(this);
-                    Popup.IsOpen = false;
+                    if (Popup != null)
+                        Popup.IsOpen = false;
                     this.Select(Text.Length, 0); //Select last char
                 }
             }
         }
 
-
-        void AutoCompleteTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void AutoCompleteTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                Popup.IsOpen = false;
-                updateSource();
+                if (Popup != null)
+                    Popup.IsOpen = false;
+                UpdateSource();
             }
         }
 
-        void updateSource()
+        private void UpdateSource()
         {
-            if (this.GetBindingExpression(System.Windows.Controls.TextBox.TextProperty) != null)
-                this.GetBindingExpression(System.Windows.Controls.TextBox.TextProperty).UpdateSource();
+            this.GetBindingExpression(System.Windows.Controls.TextBox.TextProperty)?.UpdateSource();
         }
 
-        void ItemList_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ItemList_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                TextBlock tb = e.OriginalSource as TextBlock;
-                if (tb != null)
+                if (e.OriginalSource is TextBlock tb)
                 {
                     Text = tb.Text;
-                    updateSource();
-                    Popup.IsOpen = false;
+                    UpdateSource();
+                    if (Popup != null)
+                        Popup.IsOpen = false;
                     e.Handled = true;
                 }
             }
@@ -168,22 +191,21 @@ namespace gg_file_organizer.Controls
 
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (_loaded)
+            if (_loaded && ItemList != null && Popup != null)
             {
                 try
                 {
                     //if (lastPath != Path.GetDirectoryName(this.Text))
                     //if (textBox.Text.EndsWith("\\"))                        
                     {
-                        lastPath = Path.GetDirectoryName(this.Text);
+                        _lastPath = Path.GetDirectoryName(this.Text);
                         string[] paths = Lookup(this.Text);
 
                         ItemList.Items.Clear();
                         foreach (string path in paths)
-                            if (!(String.Equals(path, this.Text, StringComparison.CurrentCultureIgnoreCase)))
+                            if (!string.Equals(path, this.Text, StringComparison.CurrentCultureIgnoreCase))
                                 ItemList.Items.Add(path);
                     }
-
 
                     Popup.IsOpen = ItemList.Items.Count > 0;
 
@@ -196,30 +218,34 @@ namespace gg_file_organizer.Controls
                 }
                 catch
                 {
-
+                    // Silently handle path lookup errors
                 }
             }
         }
-
 
         private string[] Lookup(string path)
         {
             try
             {
-                if (Directory.Exists(Path.GetDirectoryName(path)))
+                var directoryName = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
                 {
-                    DirectoryInfo lookupFolder = new DirectoryInfo(Path.GetDirectoryName(path));
-                    if (lookupFolder != null)
-                    {
-                        DirectoryInfo[] AllItems = lookupFolder.GetDirectories();
-                        return (from di in AllItems where di.FullName.StartsWith(path, StringComparison.CurrentCultureIgnoreCase) select di.FullName).ToArray();
-                    }
+                    DirectoryInfo lookupFolder = new DirectoryInfo(directoryName);
+                    DirectoryInfo[] allItems = lookupFolder.GetDirectories();
+                    return (from di in allItems 
+                            where di.FullName.StartsWith(path, StringComparison.CurrentCultureIgnoreCase) 
+                            select di.FullName).ToArray();
                 }
             }
-            catch (Exception ex)
+            catch (UnauthorizedAccessException)
             {
+                // User doesn't have access to this directory
             }
-            return new string[0];
+            catch (IOException)
+            {
+                // Directory may have been removed
+            }
+            return Array.Empty<string>();
         }
     }
 }
